@@ -5,6 +5,9 @@ const kittySchema = new mongoose.Schema({
   name: String
 });
 
+require('dotenv').config()
+
+
 const Kitten = mongoose.model('Kitten', kittySchema);
 
 const app = express();
@@ -13,10 +16,16 @@ const port = 3000;
 app.use(express.json())
 app.use(express.urlencoded())
 
-const CONNECTION_STRING = "mongodb://54.179.183.169:27017/local?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.10.6"
+const CONNECTION_STRING = `mongodb://${process.env.IP}:27017/local?directConnection=true&serverSelectionTimeoutMS=3000&appName=mongosh+1.10.6`
 async function connect() {
-  await mongoose.connect(CONNECTION_STRING);
-  console.log('Connected mongodb')
+  try {
+    await mongoose.connect(CONNECTION_STRING);
+    console.log('Connected mongodb')
+  } catch {
+    console.log('Connected to mongodb failed!')
+    process.exit(1)
+  }
+
 }
 
 connect().catch(err => console.log(err));
